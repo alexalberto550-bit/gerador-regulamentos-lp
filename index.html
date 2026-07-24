@@ -715,7 +715,7 @@ function buildSummaryText(data){
 // ATENÇÃO: esta é a URL de TESTE do n8n. Quando o fluxo for para produção,
 // troque APENAS o valor abaixo pela URL definitiva do Webhook (não altere o restante da função).
 const N8N_WEBHOOK_URL =
-  "https://alexalberto.app.n8n.cloud/webhook-test/gerar-regulamento"; // <-- SUBSTITUIR PELA URL DE PRODUÇÃO QUANDO DISPONÍVEL
+  "https://alexalberto.app.n8n.cloud/webhook/gerar-regulamento"; // <-- SUBSTITUIR PELA URL DE PRODUÇÃO QUANDO DISPONÍVEL
 
 async function enviarParaN8n(regulamentoData) {
   const resposta = await fetch(N8N_WEBHOOK_URL, {
