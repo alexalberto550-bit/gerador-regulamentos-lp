@@ -181,11 +181,7 @@
         <input type="text" id="solicitante_area" placeholder="Ex.: DICOR Minas Gerais">
       </div>
     </div>
-    <div class="field">
-      <label for="email_destino">E-mail para envio do regulamento</label>
-      <input type="email" id="email_destino" placeholder="responsavel@wizcorporate.com">
-      <div class="hint">Este é o e-mail que receberá o regulamento final.</div>
-    </div>
+
   </div>
 
   <!-- 1. Nome da Campanha -->
@@ -533,7 +529,6 @@ function buildRegulamentoData(){
   const data = {
     solicitante_nome: val('solicitante_nome'),
     solicitante_area: val('solicitante_area'),
-    email_destino: val('email_destino'),
 
     nome_campanha: val('nome_campanha'),
     produto: val('produto'),
@@ -593,7 +588,6 @@ function validateRegulamentoData(data){
   const requiredSimple = [
     ['solicitante_nome', 'Nome do solicitante'],
     ['solicitante_area', 'Área/escritório'],
-    ['email_destino', 'E-mail para envio do regulamento'],
     ['nome_campanha', 'Nome da campanha'],
     ['produto', 'Produto/ramo da campanha'],
     ['data_inicio', 'Data de início'],
@@ -619,9 +613,6 @@ function validateRegulamentoData(data){
     if(!data[key] || data[key].length === 0) errors.push(`Adicione ao menos um item em: ${label}.`);
   });
 
-  if(data.email_destino && !isValidEmail(data.email_destino)){
-    errors.push('O e-mail informado não parece válido.');
-  }
 
   if(data.data_inicio && data.data_fim && data.data_fim < data.data_inicio){
     errors.push('A data de término não pode ser anterior à data de início.');
