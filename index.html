@@ -129,32 +129,13 @@
   .radio-opt{ display:flex; align-items:center; gap:6px; font-size:14px; font-weight:500; }
   .radio-opt input{ width:auto; }
 
-  /* submit + summary */
+  /* submit */
   .submit-area{ text-align:center; margin: 8px 0 40px; }
   .btn-primary{
     background:var(--orange); color:#fff; border:none; font-weight:700; font-size:15px;
     padding:14px 34px; border-radius:9px; cursor:pointer; box-shadow:0 4px 14px rgba(242,103,22,.3);
   }
   .btn-primary:hover{ background:var(--orange-dark); }
-
-  .summary-card{ display:none; }
-  .summary-card.show{ display:block; }
-  .summary-box{
-    background:var(--charcoal); color:#f1f1f0; border-radius:8px; padding:18px;
-    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size:12.5px;
-    white-space:pre-wrap; max-height:420px; overflow-y:auto; line-height:1.55;
-  }
-  .action-row{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
-  .btn-secondary{
-    background:#fff; border:1px solid var(--gray-300); color:var(--charcoal); font-weight:700; font-size:13.5px;
-    padding:10px 18px; border-radius:8px; cursor:pointer;
-  }
-  .btn-secondary:hover{ border-color:var(--orange); color:var(--orange); }
-  .copied-msg{ font-size:13px; color:#2E8B57; font-weight:700; margin-left:4px; display:none; }
-
-  .config-note{
-    font-size:12px; color:var(--gray-500); background:var(--gray-100); border-radius:8px; padding:10px 12px; margin-top:10px;
-  }
 
   /* confirmation modal */
   .modal-overlay{
@@ -201,9 +182,9 @@
       </div>
     </div>
     <div class="field">
-      <label for="email_destino">E-mail para envio do resumo</label>
+      <label for="email_destino">E-mail para envio do regulamento</label>
       <input type="email" id="email_destino" placeholder="responsavel@wizcorporate.com">
-      <div class="hint">Este é o e-mail que vai receber o resumo para a montagem do regulamento final.</div>
+      <div class="hint">Este é o e-mail que receberá o regulamento final.</div>
     </div>
   </div>
 
@@ -447,18 +428,6 @@
     <div class="hint" id="submitStatus" style="margin-top:10px; min-height:16px;"></div>
   </div>
 
-  <!-- Summary -->
-  <div class="card summary-card" id="summaryCard">
-    <div class="sec-head"><span class="sec-num">✓</span><h2 class="sec-title">Resumo pronto para envio</h2></div>
-    <div class="summary-box" id="summaryBox"></div>
-    <div class="action-row">
-      <button type="button" class="btn-secondary" id="btnCopiar">Copiar resumo</button>
-      <span class="copied-msg" id="copiedMsg">Copiado!</span>
-      <button type="button" class="btn-secondary" id="btnEmail">Enviar por e-mail</button>
-    </div>
-    <div class="config-note">Envie este resumo para quem monta o regulamento — ele será usado para preencher o modelo oficial no layout padrão, sem nenhuma alteração visual.</div>
-  </div>
-
 </div>
 
 <!-- Confirmação de envio -->
@@ -624,7 +593,7 @@ function validateRegulamentoData(data){
   const requiredSimple = [
     ['solicitante_nome', 'Nome do solicitante'],
     ['solicitante_area', 'Área/escritório'],
-    ['email_destino', 'E-mail para envio do resumo'],
+    ['email_destino', 'E-mail para envio do regulamento'],
     ['nome_campanha', 'Nome da campanha'],
     ['produto', 'Produto/ramo da campanha'],
     ['data_inicio', 'Data de início'],
@@ -674,104 +643,10 @@ function validateRegulamentoData(data){
   return errors;
 }
 
-/* ---------- human-readable summary (built from regulamentoData) ---------- */
-function buildSummaryText(data){
-  const lines = [];
-  lines.push('SOLICITAÇÃO DE REGULAMENTO — RESUMO PARA MONTAGEM');
-  lines.push('====================================================');
-  lines.push(`Solicitante: ${data.solicitante_nome || '(não informado)'}`);
-  lines.push(`Área/escritório: ${data.solicitante_area || '(não informado)'}`);
-  lines.push('');
-  lines.push('1. NOME DA CAMPANHA');
-  lines.push(`Nome da campanha/desafio: ${data.nome_campanha || '(não informado)'}`);
-  lines.push('');
-  lines.push('2. OBJETIVO');
-  lines.push(`Produto/ramo da campanha: ${data.produto || '(não informado)'}`);
-  lines.push('');
-  lines.push('3. VIGÊNCIA');
-  lines.push(`De ${fmtDateBR(data.data_inicio) || '(não informado)'} a ${fmtDateBR(data.data_fim) || '(não informado)'}`);
-  lines.push('');
-  lines.push('4. ABRANGÊNCIA');
-  lines.push(`Unidades/áreas: ${data.areas || '(não informado)'}`);
-  lines.push(`Região/UF: ${data.regioes || '(não informado)'}`);
-  lines.push('');
-  lines.push('5. PARTICIPANTES ELEGÍVEIS');
-  data.cargos_elegiveis.forEach(v=> lines.push(`- ${v}`));
-  lines.push('');
-  lines.push('6. PRODUTOS ELEGÍVEIS');
-  data.produtos_elegiveis.forEach(v=> lines.push(`- ${v}`));
-  lines.push('');
-  lines.push('7. MECÂNICA DO DESAFIO');
-  lines.push(`Volume mínimo: ${data.valor_minimo || '(não informado)'}`);
-  lines.push(`Métrica: ${data.metrica || '(não informado)'}`);
-  lines.push('Considerado:');
-  data.criterios_considerados.forEach(v=> lines.push(`  - ${v}`));
-  lines.push('O que não deve ser considerado:');
-  data.criterios_excluidos.forEach(v=> lines.push(`  - ${v}`));
-  lines.push('');
-  lines.push('8 PREMIAÇÃO PRINCIPAL');
-  lines.push(`Valor: ${data.premiacao_principal || '(não informado)'}`);
-  lines.push('');
-
-  if(data.meta_proporcional_ativa){
-    lines.push('8.1 PREMIAÇÃO POR META PROPORCIONAL (incluir no regulamento)');
-    lines.push(`Critério de multiplicação: ${data.criterio_de_multiplicacao || '(não informado)'}`);
-    if(data.premiacao_gestores.length){
-      lines.push('Cargos de gestão e valores:');
-      data.premiacao_gestores.forEach(g=> lines.push(`  - ${g.cargo || '(cargo)'}: ${g.valor || '(valor)'}`));
-    }
-    if(data.quantidade_referencia || data.valor_total_calculado){
-      lines.push(`Exemplo: ${data.quantidade_referencia || '(quantidade)'} → ${data.valor_total_calculado || '(valor total)'}`);
-    }
-    lines.push('');
-  } else {
-    lines.push('8.1 PREMIAÇÃO POR META PROPORCIONAL: não incluir nesta campanha');
-    lines.push('');
-  }
-
-  if(data.ranking_ativo){
-    lines.push('8.2 PREMIAÇÃO ADICIONAL/RANKING FINAL (incluir no regulamento)');
-    lines.push(`Data-limite de apuração: ${fmtDateBR(data.data_apuracao) || '(não informado)'}`);
-    lines.push(`Nº de colocações premiadas: ${data.qtd_colocacoes || '(não informado)'}`);
-    lines.push(`Cargo elegível: ${data.cargo_ranking || '(não informado)'}`);
-    lines.push(`Valor da premiação adicional: ${data.premiacao_adicional || '(não informado)'}`);
-    lines.push(`1º lugar: ${data.premiacao_1_lugar || '(não informado)'}`);
-    lines.push(`2º lugar: ${data.premiacao_2_lugar || '(não informado)'}`);
-    lines.push(`3º lugar: ${data.premiacao_3_lugar || '(não informado)'}`);
-    lines.push(`Limite máximo por participante: ${data.valor_maximo_participante || '(não informado)'}`);
-    lines.push('');
-  } else {
-    lines.push('8.2 PREMIAÇÃO ADICIONAL/RANKING FINAL: não incluir nesta campanha');
-    lines.push('');
-  }
-
-  lines.push('9. APURAÇÃO E PAGAMENTO');
-  lines.push(`Periodicidade: ${data.periodicidade || '(não informado)'}`);
-  lines.push(`Prazo de pagamento: ${data.prazo_de_pagamento || '(não informado)'}`);
-  if(data.mes_referencia || data.mes_pagamento){
-    lines.push(`Exemplo: meta atingida em ${data.mes_referencia || '(mês de referência)'}, pagamento em ${data.mes_pagamento || '(mês de pagamento)'}`);
-  }
-  lines.push('');
-  lines.push('10. FORMA DE PAGAMENTO');
-  lines.push(`Meio: ${data.meio_de_pagamento || '(não informado)'}`);
-  lines.push('');
-  lines.push('11. LIMITE DE PARTICIPANTES PREMIADOS');
-  lines.push(`Quantidade estimada: ${data.limite_participantes || '(não informado)'}`);
-  lines.push('');
-  lines.push('12. COMUNICAÇÃO E DIVULGAÇÃO');
-  data.canais_divulgacao.forEach(v=> lines.push(`- ${v}`));
-  lines.push('');
-  lines.push('13. CONDIÇÕES GERAIS');
-  lines.push(data.clausulas_adicionais ? `Cláusulas adicionais: ${data.clausulas_adicionais}` : 'Apenas cláusulas padrão do regulamento.');
-
-  return lines.join('\n');
-}
-
 /* ---------- n8n webhook integration ---------- */
-// ATENÇÃO: esta é a URL de TESTE do n8n. Quando o fluxo for para produção,
-// troque APENAS o valor abaixo pela URL definitiva do Webhook (não altere o restante da função).
+// URL de produção do webhook do n8n.
 const N8N_WEBHOOK_URL =
-  "https://alexalberto.app.n8n.cloud/webhook/gerar-regulamento"; // <-- SUBSTITUIR PELA URL DE PRODUÇÃO QUANDO DISPONÍVEL
+  "https://alexalberto.app.n8n.cloud/webhook/gerar-regulamento";
 
 async function enviarParaN8n(regulamentoData) {
   const resposta = await fetch(N8N_WEBHOOK_URL, {
@@ -796,39 +671,17 @@ async function enviarParaN8n(regulamentoData) {
   return resultado;
 }
 
-/* ---------- main action: generate summary + send to n8n ---------- */
+/* ---------- main action: validate and send to n8n ---------- */
 document.getElementById('btnGerar').addEventListener('click', async ()=>{
   const regulamentoData = buildRegulamentoData();
   const errors = validateRegulamentoData(regulamentoData);
 
   if(errors.length){
-    alert('Antes de gerar o resumo, corrija:\n\n- ' + errors.join('\n- '));
+    alert('Antes de enviar, corrija:\n\n- ' + errors.join('\n- '));
     return;
   }
 
-  const summary = buildSummaryText(regulamentoData);
-  document.getElementById('summaryBox').textContent = summary;
-  document.getElementById('summaryCard').classList.add('show');
-  document.getElementById('summaryCard').scrollIntoView({behavior:'smooth', block:'start'});
-
-  document.getElementById('btnCopiar').onclick = ()=>{
-    navigator.clipboard.writeText(summary).then(()=>{
-      const msg = document.getElementById('copiedMsg');
-      msg.style.display = 'inline';
-      setTimeout(()=> msg.style.display = 'none', 2000);
-    });
-  };
-
-  // Envio por e-mail comentado nesta fase de teste do webhook, para evitar
-  // qualquer envio duplicado. O código permanece disponível, não foi apagado.
-  // document.getElementById('btnEmail').onclick = ()=>{
-  //   const to = regulamentoData.email_destino;
-  //   const subject = encodeURIComponent(`Novo regulamento de campanha — ${regulamentoData.nome_campanha || 'a definir'}`);
-  //   const body = encodeURIComponent(summary);
-  //   window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-  // };
-
-  // ---- Envio do JSON completo para o Webhook de teste do n8n ----
+  // ---- Envio do JSON completo para o Webhook de produção do n8n ----
   const btnGerar = document.getElementById('btnGerar');
   const statusEl = document.getElementById('submitStatus');
   const textoOriginal = btnGerar.textContent;
@@ -841,7 +694,7 @@ document.getElementById('btnGerar').addEventListener('click', async ()=>{
   try {
     await enviarParaN8n(regulamentoData);
     statusEl.style.color = '#2E8B57';
-    statusEl.textContent = 'Dados enviados com sucesso para o n8n (fluxo de teste).';
+    statusEl.textContent = 'Solicitação enviada com sucesso.';
     abrirModalConfirmacao();
   } catch (erro) {
     statusEl.style.color = '#C00000';
