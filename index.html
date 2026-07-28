@@ -290,7 +290,7 @@
       <button type="button" class="add-btn" data-add="criterios_considerados" data-ph="Ex.: negócios novos">+ adicionar critério</button>
     </div>
     <div class="field">
-      <label>Não considerado</label>
+      <label>O que não deve ser considerado</label>
       <div id="criterios_excluidos"></div>
       <button type="button" class="add-btn" data-add="criterios_excluidos" data-ph="Ex.: renovação de apólices">+ adicionar exclusão</button>
     </div>
@@ -298,7 +298,7 @@
 
   <!-- 7.1 Premiação principal -->
   <div class="card">
-    <div class="sec-head"><span class="sec-num">8.1</span><h2 class="sec-title">Premiação principal</h2></div>
+    <div class="sec-head"><span class="sec-num">8</span><h2 class="sec-title">Premiação principal</h2></div>
     <div class="field">
       <label for="premiacao_principal">Valor da premiação ao atingir a meta individual</label>
       <input type="text" id="premiacao_principal" placeholder="Ex.: R$ 250,00">
@@ -308,7 +308,7 @@
   <!-- 7.2 Premiação por escritório (opcional) -->
   <div class="card">
     <div class="toggle-row" id="toggle72Row">
-      <div class="sec-head" style="margin-bottom:0;"><span class="sec-num">8.2</span><h2 class="sec-title">Premiação por meta proporcional</h2></div>
+      <div class="sec-head" style="margin-bottom:0;"><span class="sec-num">8.1</span><h2 class="sec-title">Premiação por meta proporcional</h2></div>
       <label class="switch"><input type="checkbox" id="toggle72"><span class="slider"></span></label>
     </div>
     <div class="optional-body hidden" id="body72">
@@ -337,7 +337,7 @@
   <!-- 7.3 Ranking final (opcional) -->
   <div class="card">
     <div class="toggle-row" id="toggle73Row">
-      <div class="sec-head" style="margin-bottom:0;"><span class="sec-num">8.3</span><h2 class="sec-title">Premiação adicional/ranking final</h2></div>
+      <div class="sec-head" style="margin-bottom:0;"><span class="sec-num">8.2</span><h2 class="sec-title">Premiação adicional/ranking final</h2></div>
       <label class="switch"><input type="checkbox" id="toggle73"><span class="slider"></span></label>
     </div>
     <div class="optional-body hidden" id="body73">
@@ -706,15 +706,15 @@ function buildSummaryText(data){
   lines.push(`Métrica: ${data.metrica || '(não informado)'}`);
   lines.push('Considerado:');
   data.criterios_considerados.forEach(v=> lines.push(`  - ${v}`));
-  lines.push('Não considerado:');
+  lines.push('O que não deve ser considerado:');
   data.criterios_excluidos.forEach(v=> lines.push(`  - ${v}`));
   lines.push('');
-  lines.push('8.1 PREMIAÇÃO PRINCIPAL');
+  lines.push('8 PREMIAÇÃO PRINCIPAL');
   lines.push(`Valor: ${data.premiacao_principal || '(não informado)'}`);
   lines.push('');
 
   if(data.meta_proporcional_ativa){
-    lines.push('8.2 PREMIAÇÃO POR META PROPORCIONAL (incluir no regulamento)');
+    lines.push('8.1 PREMIAÇÃO POR META PROPORCIONAL (incluir no regulamento)');
     lines.push(`Critério de multiplicação: ${data.criterio_de_multiplicacao || '(não informado)'}`);
     if(data.premiacao_gestores.length){
       lines.push('Cargos de gestão e valores:');
@@ -725,12 +725,12 @@ function buildSummaryText(data){
     }
     lines.push('');
   } else {
-    lines.push('8.2 PREMIAÇÃO POR META PROPORCIONAL: não incluir nesta campanha');
+    lines.push('8.1 PREMIAÇÃO POR META PROPORCIONAL: não incluir nesta campanha');
     lines.push('');
   }
 
   if(data.ranking_ativo){
-    lines.push('8.3 PREMIAÇÃO ADICIONAL/RANKING FINAL (incluir no regulamento)');
+    lines.push('8.2 PREMIAÇÃO ADICIONAL/RANKING FINAL (incluir no regulamento)');
     lines.push(`Data-limite de apuração: ${fmtDateBR(data.data_apuracao) || '(não informado)'}`);
     lines.push(`Nº de colocações premiadas: ${data.qtd_colocacoes || '(não informado)'}`);
     lines.push(`Cargo elegível: ${data.cargo_ranking || '(não informado)'}`);
@@ -741,7 +741,7 @@ function buildSummaryText(data){
     lines.push(`Limite máximo por participante: ${data.valor_maximo_participante || '(não informado)'}`);
     lines.push('');
   } else {
-    lines.push('8.3 PREMIAÇÃO ADICIONAL/RANKING FINAL: não incluir nesta campanha');
+    lines.push('8.2 PREMIAÇÃO ADICIONAL/RANKING FINAL: não incluir nesta campanha');
     lines.push('');
   }
 
