@@ -177,9 +177,15 @@
         <input type="text" id="solicitante_nome" placeholder="Ex.: Ana Souza">
       </div>
       <div class="field">
-        <label for="solicitante_area">Área/escritório</label>
-        <input type="text" id="solicitante_area" placeholder="Ex.: DICOR Minas Gerais">
+        <label for="solicitante_email">Seu e-mail</label>
+        <input type="email" id="solicitante_email" placeholder="Ex.: ana.souza@empresa.com.br">
+        <div class="hint">Uma cópia desta solicitação será enviada para este e-mail.</div>
       </div>
+    </div>
+
+    <div class="field">
+      <label for="solicitante_area">Área/escritório</label>
+      <input type="text" id="solicitante_area" placeholder="Ex.: DICOR Minas Gerais">
     </div>
 
   </div>
@@ -528,6 +534,7 @@ function buildRegulamentoData(){
 
   const data = {
     solicitante_nome: val('solicitante_nome'),
+    solicitante_email: val('solicitante_email'),
     solicitante_area: val('solicitante_area'),
 
     nome_campanha: val('nome_campanha'),
@@ -587,6 +594,7 @@ function validateRegulamentoData(data){
   const errors = [];
   const requiredSimple = [
     ['solicitante_nome', 'Nome do solicitante'],
+    ['solicitante_email', 'Seu e-mail'],
     ['solicitante_area', 'Área/escritório'],
     ['nome_campanha', 'Nome da campanha'],
     ['produto', 'Produto/ramo da campanha'],
@@ -604,6 +612,10 @@ function validateRegulamentoData(data){
   requiredSimple.forEach(([key, label])=>{
     if(!data[key]) errors.push(`Preencha o campo obrigatório: ${label}.`);
   });
+
+  if(data.solicitante_email && !isValidEmail(data.solicitante_email)){
+    errors.push('Informe um e-mail válido no campo Seu e-mail.');
+  }
 
   const requiredLists = [
     ['cargos_elegiveis', 'Cargos elegíveis'],
